@@ -1,0 +1,79 @@
+{
+  "name": "electron-react-production-ready-boilerplate",
+  "version": "0.0.1",
+  "description": "Finally an electron-react-typescript boilerplate that works!",
+  "author": {
+    "name": "switchswap",
+    "url": "https://github.com/switchswap"
+  },
+  "browserslist": [
+    "electron >= 9.0.4"
+  ],
+  "build": {
+    "appId": "me.switchswap.electron-react-production-ready-boilerplate",
+    "copyright": "Copyright © 2021 switchswap",
+    "extraMetadata": {
+      "easter-egg": "If you're reading this, you've found an easter egg!"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
+  },
+  "homepage": "https://github.com/switchswap/electron-react-production-ready-boilerplate",
+  "license": "MIT",
+  "main": "build/main/index.js",
+  "private": true,
+  "scripts": {
+    "build:main": "parcel build ./src/main/index.ts -d build/main --public-url /build --target=node6 --cache-dir .cache/main --no-source-maps",
+    "build:renderer": "parcel build ./src/renderer/index.html --out-dir build/renderer --public-url ./ --cache-dir .cache/renderer --no-source-maps",
+    "build": "yarn clean:build && yarn copy:all && yarn build:main && yarn build:renderer",
+    "clean:build": "rimraf build",
+    "clean:dist": "rimraf dist",
+    "copy:preload": "mkdirp ./build/main && cp ./src/main/preload.js ./build/main/preload.js ",
+    "copy:all": "yarn copy:preload",
+    "dev:bundle": "concurrently --kill-others \"yarn dev:main\" \"yarn dev:renderer\"",
+    "dev:electron": "electron .",
+    "dev:main": "parcel watch ./src/main/index.ts -d build/main --public-url /build --target=node6",
+    "dev:renderer": "parcel -p 3000 ./src/renderer/index.html --out-dir build/renderer",
+    "dev:wait": "wait-on ./build/main/index.js && wait-on http://localhost:3000",
+    "dev": "yarn clean:build && yarn copy:all && concurrently \" yarn dev:bundle \" \" yarn dev:wait && yarn dev:electron \"",
+    "package": "cross-env NODE_ENV=production yarn build && yarn clean:dist && electron-builder",
+    "lint:js": "eslint --config ./.eslintrc.js --fix --max-warnings=0 './src/**/*.{js,ts,tsx}'",
+    "lint:prettier": "prettier --write --config ./.prettierrc.json './src/**/*.{js,ts,tsx}'",
+    "lint:ts": "tsc --jsx preserve --project ./",
+    "lint": "yarn lint:ts && yarn lint:js && yarn lint:prettier"
+  },
+  "dependencies": {
+    "electron-is-dev": "^2.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "concurrently": "^6.0.1",
+    "cross-env": "^7.0.3",
+    "electron": "^12.0.2",
+    "electron-builder": "^22.10.5",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-react": "^1.1.7",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.23.1",
+    "mkdirp": "^1.0.4",
+    "parcel-bundler": "^2.0.0-beta.2",
+    "parcel-plugin-obfuscate": "^2.1.1",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.2.3",
+    "wait-on": "^5.3.0"
+  }
+}
